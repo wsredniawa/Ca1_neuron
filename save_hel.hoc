@@ -1,0 +1,85 @@
+objref pas_list, cap_list, i_list, na_list, k_list, tvec, ti, tik, tin, tpas, tcap
+objref lenvec, savdata, xvec, yvec, zvec, xyzMat, areavec, mtime
+xvec= new Vector()
+yvec= new Vector()
+zvec= new Vector()
+lenvec = new Vector()
+xyzMat=new Matrix()
+mtime = new Matrix()
+areavec=new Vector()
+na_list = new List()
+k_list = new List()
+i_list = new List()
+cap_list = new List()
+pas_list = new List()
+
+
+tvec = new Vector()
+tvec.record(&t)
+i = 0
+forall for (x,0) {
+    areavec.append(area(x)) // areas will be in um2
+    xvec.append(x3d(x))
+	yvec.append(y3d(x))
+	zvec.append(z3d(x))
+	lenvec.append(arc3d(x))
+	i = i+1
+  }
+
+xyzMat.resize(xvec.size(),5)
+xyzMat.setcol(0,xvec)
+xyzMat.setcol(1,yvec)
+xyzMat.setcol(2,zvec)
+xyzMat.setcol(3,areavec)
+xyzMat.setcol(4,lenvec)
+
+savdata = new File()
+savdata.wopen("matRecxyz.txt")
+xyzMat.fprint(savdata)
+savdata.close()
+
+//run()
+objref savdata1, savtime
+savdata1 = new File()
+
+forall for (x,0){
+	tik = new Vector()
+	tin = new Vector()
+	ti = new Vector()
+	tpas = new Vector()
+	tcap = new Vector()
+	
+	tin.record(&ina(x))
+	tik.record(&ik(x))
+	ti.record(&v(x))
+	tpas.record(&i_pas(x))
+	tcap.record(&i_cap(x))
+	
+	na_list.append(tin)
+	k_list.append(tik)
+	i_list.append(ti)
+	pas_list.append(tpas)
+	cap_list.append(tcap)
+	}
+
+
+proc sac() {
+	savdata1.wopen("matRecData.txt")
+	for k=0, xvec.size()-1 {
+	for ii=0, tvec.size()-1 {
+		savdata1.printf("%g %g %g %g %g\n", cap_list.o(k).x(ii), pas_list.o(k).x(ii), na_list.o(k).x(ii), k_list.o(k).x(ii), i_list.o(k).x(ii))
+		}
+	}
+	savdata1.close()
+	}
+run()
+sac()
+
+savtime = new File()
+savtime.wopen("Rectime.txt")
+for ii=0, tvec.size()-1 {
+	//print(tVector.x(i))
+	savtime.printf("%g\n", tvec.x(ii))
+}
+savtime.close()
+
