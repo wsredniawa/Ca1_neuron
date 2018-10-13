@@ -93,7 +93,7 @@ print('injected current:', np.sum(inj))
 print('sum of all currents all compartments', all_curr_sum, '+ ampa&nmda: ', np.sum(ampa) + np.sum(nmda))
 print('all sum:', np.sum(inj)+all_curr_sum + np.sum(ampa) + np.sum(nmda))
 #%%
-tp_man =  #time point to be plotted in 3d
+tp_man = 30 #time point to be plotted in 3d
 tp_man = 4*tp_man
 def plot_neuron(tp):
     fig2 = py.figure(figsize=(9, 6), dpi=200)
