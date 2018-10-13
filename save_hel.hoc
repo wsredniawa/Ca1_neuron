@@ -1,5 +1,5 @@
 objref pas_list, cap_list, i_list, na_list, k_list, tvec, ti, tik, tin, tpas, tcap
-objref lenvec, savdata, xvec, yvec, zvec, xyzMat, areavec, mtime
+objref lenvec, savdata, xvec, yvec, zvec, xyzMat, areavec, mtime, tamp, tamp2, amp_list, amp_list2
 xvec= new Vector()
 yvec= new Vector()
 zvec= new Vector()
@@ -12,10 +12,14 @@ k_list = new List()
 i_list = new List()
 cap_list = new List()
 pas_list = new List()
+amp_list = new List()
+amp_list2 = new List()
 
-
+objref stimvec
 tvec = new Vector()
 tvec.record(&t)
+stimvec = new Vector()
+stimvec.record(&stim.i)
 i = 0
 forall for (x,0) {
     areavec.append(area(x)) // areas will be in um2
@@ -39,7 +43,7 @@ xyzMat.fprint(savdata)
 savdata.close()
 
 //run()
-objref savdata1, savtime
+objref savdata1, savtime, savstim, savsynAmpa
 savdata1 = new File()
 
 forall for (x,0){
@@ -48,7 +52,7 @@ forall for (x,0){
 	ti = new Vector()
 	tpas = new Vector()
 	tcap = new Vector()
-	
+
 	tin.record(&ina(x))
 	tik.record(&ik(x))
 	ti.record(&v(x))
@@ -62,6 +66,14 @@ forall for (x,0){
 	cap_list.append(tcap)
 	}
 
+for j=0, synInd-1 {
+	tamp = new Vector()
+	tamp2 = new Vector()
+	tamp.record(&synAmpa[j].i)
+	tamp2.record(&synNmda[j].i)
+	amp_list.append(tamp)
+	amp_list2.append(tamp2)
+}
 
 proc sac() {
 	savdata1.wopen("matRecData.txt")
@@ -77,9 +89,21 @@ sac()
 
 savtime = new File()
 savtime.wopen("Rectime.txt")
+savstim = new File()
+savstim.wopen("recstim.txt")
 for ii=0, tvec.size()-1 {
 	//print(tVector.x(i))
 	savtime.printf("%g\n", tvec.x(ii))
+	savstim.printf("%g\n", stimvec.x(ii))
 }
+savstim.close()
 savtime.close()
+
+savsynAmpa = new File()
+savsynAmpa.wopen("recsyn.txt")
+for kj=0, synInd-1 {
+for ij=0, tvec.size()-1 {
+	savsynAmpa.printf("%g %g\n", amp_list.o(kj).x(ij), amp_list2.o(kj).x(ij))
+	}}
+savsynAmpa.close
 
